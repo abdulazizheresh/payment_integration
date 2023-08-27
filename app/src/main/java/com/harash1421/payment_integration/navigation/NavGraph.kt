@@ -1,6 +1,7 @@
 package com.harash1421.payment_integration.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,7 +12,7 @@ import com.harash1421.payment_integration.ui_screens.StripeScreen
 import com.harash1421.payment_integration.util.Screens
 
 @Composable
-fun SetupNavGraph(navController: NavHostController){
+fun SetupNavGraph(navController: NavHostController, fragmentActivity: FragmentActivity){
     NavHost(navController = navController, startDestination = Screens.Main.route){
         composable(route = Screens.Main.route){
             MainScreen(navController = navController)
@@ -23,7 +24,7 @@ fun SetupNavGraph(navController: NavHostController){
             StripeScreen(navController = navController)
         }
         composable(route = Screens.Braintree.route){
-            BraintreeScreen(navController = navController)
+            BraintreeScreen(navController = navController, fragmentActivity = fragmentActivity)
         }
     }
 }

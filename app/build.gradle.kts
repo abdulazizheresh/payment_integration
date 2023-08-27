@@ -75,6 +75,9 @@ dependencies {
     //Stripe Library
     implementation("com.stripe:stripe-android:20.28.3")
 
+    //Braintree Library
+    implementation("com.braintreepayments.api:drop-in:6.12.0")
+
     // for live data list
     implementation("androidx.compose.runtime:runtime-livedata:1.5.0")
 
