@@ -5,5 +5,6 @@ class Info {
         const val url = "https://api.stripe.com/"
         const val stripePublisherKey = ""
         const val stripeSecretKey = ""
+        const val braintreeToken = ""
     }
 }

@@ -10,14 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.rememberNavController
+import com.braintreepayments.api.DropInClient
 import com.harash1421.payment_integration.navigation.SetupNavGraph
 import com.harash1421.payment_integration.ui.theme.Payment_integrationTheme
+import com.harash1421.payment_integration.util.Info
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val dropInClient = DropInClient(this, Info.braintreeToken)
         setContent {
             Payment_integrationTheme {
                 // A surface container using the 'background' color from the theme
@@ -26,7 +29,7 @@ class MainActivity : FragmentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    SetupNavGraph(navController = navController, fragmentActivity = this)
+                    SetupNavGraph(navController = navController, dropInClient = dropInClient)
                 }
             }
         }

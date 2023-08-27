@@ -13,10 +13,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.braintreepayments.api.DropInClient
 import com.harash1421.payment_integration.viewmodel.BraintreeViewModel
 
 @Composable
-fun BraintreeScreen(navController: NavHostController, fragmentActivity: FragmentActivity) {
+fun BraintreeScreen(navController: NavHostController, dropInClient: DropInClient) {
     val context = LocalContext.current
     val viewModel: BraintreeViewModel = hiltViewModel()
 
@@ -24,7 +25,7 @@ fun BraintreeScreen(navController: NavHostController, fragmentActivity: Fragment
 
     // Use the passed fragmentActivity directly
     LaunchedEffect(Unit) {
-        viewModel.setupClient(fragmentActivity)
+        viewModel.setupClient(dropInClient)
     }
 
     LaunchedEffect(paymentResult) {
@@ -38,7 +39,7 @@ fun BraintreeScreen(navController: NavHostController, fragmentActivity: Fragment
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(onClick = {
-            viewModel.startPayment()
+            viewModel.startPayment(dropInClient)
         }) {
             Text(text = "Buy Now")
         }
