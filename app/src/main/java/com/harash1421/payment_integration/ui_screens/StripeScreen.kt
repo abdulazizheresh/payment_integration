@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.harash1421.payment_integration.viewmodel.StripeViewModel
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.payments.paymentlauncher.PaymentLauncher
@@ -16,7 +18,7 @@ import com.stripe.android.paymentsheet.PaymentSheetContract
 import kotlinx.coroutines.launch
 
 @Composable
-fun StripeScreen(viewModel: StripeViewModel = hiltViewModel()) {
+fun StripeScreen(navController: NavHostController, viewModel: StripeViewModel = hiltViewModel()) {
     val customer by viewModel.customer.collectAsState()
     val ephemeralKey by viewModel.ephemeralKey.collectAsState()
     val paymentIntent by viewModel.paymentIntent.collectAsState()
