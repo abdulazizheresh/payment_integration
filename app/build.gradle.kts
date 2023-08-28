@@ -13,8 +13,8 @@ android {
         applicationId = "com.harash1421.payment_integration"
         minSdk = 27
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -71,6 +71,9 @@ dependencies {
 
     //Data Store Repository
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    //Google Billing Library
+    implementation("com.android.billingclient:billing-ktx:6.0.1")
 
     //Stripe Library
     implementation("com.stripe:stripe-android:20.28.3")
