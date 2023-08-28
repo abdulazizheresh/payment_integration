@@ -13,8 +13,8 @@ android {
         applicationId = "com.harash1421.payment_integration"
         minSdk = 27
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 7
+        versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

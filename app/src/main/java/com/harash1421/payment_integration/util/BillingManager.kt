@@ -2,6 +2,7 @@ package com.harash1421.payment_integration.util
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -10,7 +11,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetailsParams
 import com.harash1421.payment_integration.data.models.Product
 
-class BillingManager(private val context: Context) {
+class BillingManager(context: Context) {
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
         // Handle purchase updates.
@@ -36,16 +37,26 @@ class BillingManager(private val context: Context) {
     }
 
     fun queryAvailableProducts(callback: (List<Product>) -> Unit) {
-        val skuList = listOf("shoe_nike_large")
-        val params = SkuDetailsParams.newBuilder().setSkusList(skuList).setType(BillingClient.SkuType.INAPP).build()
+        if (billingClient.isReady) {
+            val skuList = listOf("shoe_nike_large")
+            val params = SkuDetailsParams.newBuilder()
+                .setSkusList(skuList)
+                .setType(BillingClient.SkuType.INAPP)
+                .build()
 
-        billingClient.querySkuDetailsAsync(params) { billingResult, skuDetailsList ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
-                val products = skuDetailsList.map { Product(it.sku, it.title, it.description, it.price) }
-                callback(products)
+            billingClient.querySkuDetailsAsync(params) { billingResult, skuDetailsList ->
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
+                    val products = skuDetailsList.map { Product(it.sku, it.title, it.description, it.price) }
+                    callback(products)
+                } else {
+                    Log.e("BillingManager", "Failed to query products: ${billingResult.debugMessage}")
+                }
             }
+        } else {
+            Log.e("BillingManager", "BillingClient is not ready.")
         }
     }
+
 
     fun purchaseProduct(product: Product, activity: Activity) {
         val skuDetailsParams = SkuDetailsParams.newBuilder()
