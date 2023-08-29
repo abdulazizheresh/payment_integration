@@ -29,7 +29,7 @@ class MainActivity : FragmentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    SetupNavGraph(navController = navController, dropInClient = dropInClient)
+                    SetupNavGraph(navController = navController, dropInClient = dropInClient, activity = this)
                 }
             }
         }

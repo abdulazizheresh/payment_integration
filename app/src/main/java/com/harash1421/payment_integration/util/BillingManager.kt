@@ -3,64 +3,65 @@ package com.harash1421.payment_integration.util
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.SkuDetailsParams
+import android.widget.Toast
+import com.android.billingclient.api.*
 import com.harash1421.payment_integration.data.models.Product
 
 class BillingManager(context: Context) {
 
+    private val TAG = "BillingManager"
+
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
-        // Handle purchase updates.
-        // For simplicity, this is left out for now.
+        // Handle purchase updates. Left for future implementation.
     }
 
-    private val billingClient = BillingClient.newBuilder(context)
+    private val billingClient: BillingClient = BillingClient.newBuilder(context)
         .setListener(purchasesUpdatedListener)
         .enablePendingPurchases()
         .build()
 
     init {
+        startBillingClientConnection(context)
+    }
+
+    private fun startBillingClientConnection(context: Context) {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // The BillingClient is ready. You can query purchases here if needed.
+                    Log.d(TAG, "BillingClient is ready")
+                } else {
+                    Log.e(TAG, "Error ${billingResult.responseCode}: ${billingResult.debugMessage}")
+                    Toast.makeText(context, "${billingResult.responseCode}", Toast.LENGTH_SHORT).show()
                 }
             }
+
             override fun onBillingServiceDisconnected() {
-                // Handle disconnections, possibly trying to restart the connection.
-            }
+                Log.w(TAG, "BillingService was disconnected, trying to restart")
+                Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT).show()            }
         })
     }
 
     fun queryAvailableProducts(callback: (List<Product>) -> Unit) {
-        if (billingClient.isReady) {
-            val skuList = listOf("shoe_nike_large")
-            val params = SkuDetailsParams.newBuilder()
-                .setSkusList(skuList)
-                .setType(BillingClient.SkuType.INAPP)
-                .build()
+        val skuList = listOf("shoe_nike_large")
+        val params = SkuDetailsParams.newBuilder()
+            .setSkusList(skuList)
+            .setType(BillingClient.SkuType.INAPP)
+            .build()
 
-            billingClient.querySkuDetailsAsync(params) { billingResult, skuDetailsList ->
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
-                    val products = skuDetailsList.map { Product(it.sku, it.title, it.description, it.price) }
-                    callback(products)
-                } else {
-                    Log.e("BillingManager", "Failed to query products: ${billingResult.debugMessage}")
-                }
+        billingClient.querySkuDetailsAsync(params) { billingResult, skuDetailsList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
+                val products = skuDetailsList.map { Product(it.sku, it.title, it.description, it.price) }
+                callback(products)
+            } else {
+                Log.e(TAG, "Failed to query products: ${billingResult.debugMessage}")
             }
-        } else {
-            Log.e("BillingManager", "BillingClient is not ready.")
         }
     }
 
-
-    fun purchaseProduct(product: Product, activity: Activity) {
+    fun purchaseProduct(activity: Activity) {
+        val skuList = listOf("shoe_nike_large")
         val skuDetailsParams = SkuDetailsParams.newBuilder()
-            .setSkusList(listOf(product.productId))
+            .setSkusList(skuList)
             .setType(BillingClient.SkuType.INAPP)
             .build()
 
@@ -70,6 +71,8 @@ class BillingManager(context: Context) {
                     .setSkuDetails(skuDetailsList[0])
                     .build()
                 billingClient.launchBillingFlow(activity, flowParams)
+            } else {
+                Log.e(TAG, "Failed to initiate purchase flow: ${billingResult.debugMessage}")
             }
         }
     }

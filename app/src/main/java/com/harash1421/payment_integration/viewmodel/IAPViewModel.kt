@@ -1,11 +1,14 @@
 package com.harash1421.payment_integration.viewmodel
 
 import android.app.Activity
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.harash1421.payment_integration.data.models.Product
 import com.harash1421.payment_integration.util.BillingManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,15 +16,20 @@ class IAPViewModel @Inject constructor(
     private val billingManager: BillingManager
 ) : ViewModel() {
 
-    val productDetailsList: MutableLiveData<List<Product>> = MutableLiveData()
+    private val _productDetailsList: MutableLiveData<List<Product>> = MutableLiveData()
+    val productDetailsList: LiveData<List<Product>> get() = _productDetailsList
 
     fun queryProductDetails() {
-        billingManager.queryAvailableProducts { products ->
-            productDetailsList.value = products
+        viewModelScope.launch {
+            billingManager.queryAvailableProducts { products ->
+                _productDetailsList.value = products
+            }
         }
     }
 
-    fun purchaseProduct(product: Product, activity: Activity) {
-        billingManager.purchaseProduct(product, activity)
+    fun purchaseProduct(activity: Activity) {
+        viewModelScope.launch {
+            billingManager.purchaseProduct(activity)
+        }
     }
 }
