@@ -13,8 +13,8 @@ android {
         applicationId = "com.harash1421.payment_integration"
         minSdk = 27
         targetSdk = 34
-        versionCode = 16
-        versionName = "2.3"
+        versionCode = 21
+        versionName = "2.5.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -86,6 +86,8 @@ dependencies {
 
     //Lifecycle Libraries
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha01")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
